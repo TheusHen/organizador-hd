@@ -1,0 +1,59 @@
+<html>
+<head>
+<title>Gerenciador HD</title>
+<HTA:APPLICATION
+    ID="GerenciadorHD"
+    APPLICATIONNAME="GerenciadorHD"
+    BORDER="dialog"
+    CAPTION="yes"
+    SHOWINTASKBAR="no"
+    SINGLEINSTANCE="yes"
+    WINDOWSTATE="normal">
+<script language="VBScript">
+Sub Window_OnLoad
+    ' Ajustar tamanho da janela (largura x altura)
+    window.resizeTo 600, 400
+End Sub
+
+Sub Limpar()
+    Executar "limpar"
+End Sub
+
+Sub Organizar()
+    Executar "organizar"
+End Sub
+
+Sub Executar(acao)
+    Dim objShell, objFolder, caminho, comando, shell
+    Set objShell = CreateObject("Shell.Application")
+    Set objFolder = objShell.BrowseForFolder(0, "Selecione a pasta:", 0, 0)
+
+    If Not objFolder Is Nothing Then
+        caminho = objFolder.Items().Item().Path
+        comando = "powershell -ExecutionPolicy Bypass -File core.ps1 -acao " & acao & " -caminho """ & caminho & """"
+        Set shell = CreateObject("WScript.Shell")
+        shell.Run comando, 1, True
+    Else
+        MsgBox "Nenhuma pasta selecionada.", vbExclamation, "Erro"
+    End If
+
+    window.close
+End Sub
+
+Sub Cancelar()
+    window.close
+End Sub
+</script>
+<style>
+    body { font-family: Arial; margin: 20px; text-align: center; }
+    button { width: 100px; height: 30px; margin: 10px; font-size: 14px; }
+</style>
+</head>
+<body>
+<h3>Escolha:</h3>
+<button onclick="Limpar">Limpar</button>
+<button onclick="Organizar">Organizar</button>
+<button onclick="Cancelar">Cancelar</button>
+<p>By: TheusHen</p>
+</body>
+</html>
